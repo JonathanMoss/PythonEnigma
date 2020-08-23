@@ -19,11 +19,7 @@ class Plugboard:
         if len(stecker_pairs) > MAX_STECKER_PAIR:
             raise ValueError("Too many plugboard pairs defined")
 
-        print(self._steckerbrett)
-
         self._process_stecker_pairs(stecker_pairs)
-
-        print(self._steckerbrett)
 
     def return_letter(self, letter: str) -> str:
 
