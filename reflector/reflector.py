@@ -37,3 +37,4 @@ if __name__ == "__main__":
 
     rf = Reflector(ReflectorWiring.C)
     print(rf.return_letter('A'))
+    print(rf.return_letter('F'))
