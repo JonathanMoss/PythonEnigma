@@ -4,6 +4,7 @@ import re
 
 
 class RotorConfig:
+    """ The settings for each of the 8 rotors """
 
     SETTINGS = {
         'I': {
@@ -43,11 +44,6 @@ class RotorConfig:
 
 class Rotor:
 
-    def set_position(self, position: int):
-        """ Set the rotor position, as per the key setting in the msg """
-
-        self._current_index = position
-
     def _advance_rotor(self, apply_to_rotor=True):
 
         # Advance the rotor wiring
@@ -60,36 +56,36 @@ class Rotor:
             self._rotor = {}
             for index, value in enumerate(list(self._rotor_wiring)):
                 self._rotor.update({
-                    index + 1: value
+                    chr(index + 65): value
                 })
+
+            if self._window_letter == "Z":
+                self._window_letter = "A"
+            else:
+                self._window_letter = chr(ord(self._window_letter) + 1)
 
     def return_letter(self, letter: str) -> tuple:
 
-        # Current rotor dial position
-        print(self._current_ring_letter)
-        print(self._current_index)
-        print(self._rotor_wiring)
-
-
-        # Convert letter to rotor index
-        input_letter = ord(str(letter).upper()) - 64
-        print(input_letter)
-
-        if self._current_ring_letter in self._turnover:
+        if self._window_letter in self._turnover:
             turnover_next_dial = True
         else:
             turnover_next_dial = False
 
         # Advance
         self._advance_rotor()
-        print(self._rotor)
 
         return (
-            self._rotor.get(input_letter),
+            self._rotor.get(letter),
             turnover_next_dial
         )
 
-    def __init__(self, rotor: str, ring_setting):
+    def __init__(self, rotor: str, ring_setting, initial_setting):
+
+        # Get the initial setting (Grundstellung)
+        if not re.match('[A-Z]', initial_setting):
+            raise ValueError('Invalid initial setting')
+        else:
+            self._initial_setting = str(initial_setting).upper()
 
         # Get the rotor version (Walzenlage)
         self._rotor_version = str(rotor).upper()
@@ -99,7 +95,7 @@ class Rotor:
         # Get the initial ring setting (Ringstellung), could be an int or char
         if re.match('[A-Z]', ring_setting):
             self._ring_setting = ord(ring_setting) - 64
-            print(self._ring_setting)
+
         else:
             if not isinstance(ring_setting, int):
                 ring_setting = int(ring_setting)
@@ -130,7 +126,7 @@ class Rotor:
             if value == "A":
                 dot_position = index
 
-        # Step 2: Extrapolate number of steps from A to key setting
+        # Step 2: Setup the Ringstellung
         rotor_wiring_list = list(self._rotor_wiring)
         for step in range(self._ring_setting - ord('A')):
             for index, value in enumerate(rotor_wiring_list):
@@ -150,19 +146,45 @@ class Rotor:
         # Step 4: Create the rotor
         for index, value in enumerate(list(self._rotor_wiring)):
             self._rotor.update({
-                index + 1: value
+                chr(index + 65): value
             })
 
-        self._current_index = self._get_current_index(
-            chr(self._ring_setting)) + 1
-        self._current_ring_letter = chr(90 - self._current_index)
-        print(self._rotor)
-        print(self._current_index, self._current_ring_letter)
+        # Set the initial setting (Grundstellung)
+        self._window_letter = "A"
+        window_letter_num = ord(self._window_letter) - 64
+        initial_setting = ord(self._initial_setting) - 64
+        steps = initial_setting - window_letter_num % 26
+        for step in range(steps):
+            self._advance_rotor(True)
 
 
 if __name__ == "__main__":
 
-    rt = Rotor("I", "D")
+    rt = Rotor("I", "03", "Z")
+    print(rt.return_letter('A'))
+    print(rt.return_letter('A'))
+    print(rt.return_letter('A'))
+    print(rt.return_letter('A'))
+    print(rt.return_letter('A'))
+    print(rt.return_letter('A'))
+    print(rt.return_letter('A'))
+    print(rt.return_letter('A'))
+    print(rt.return_letter('A'))
+    print(rt.return_letter('A'))
+    print(rt.return_letter('A'))
+    print(rt.return_letter('A'))
+    print(rt.return_letter('A'))
+    print(rt.return_letter('A'))
+    print(rt.return_letter('A'))
+    print(rt.return_letter('A'))
+    print(rt.return_letter('A'))
+    print(rt.return_letter('A'))
+    print(rt.return_letter('A'))
+    print(rt.return_letter('A'))
+    print(rt.return_letter('A'))
+    print(rt.return_letter('A'))
+    print(rt.return_letter('A'))
+    print(rt.return_letter('A'))
     print(rt.return_letter('A'))
     print(rt.return_letter('A'))
     print(rt.return_letter('A'))
