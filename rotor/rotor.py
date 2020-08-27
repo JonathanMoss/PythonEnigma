@@ -64,7 +64,7 @@ class Rotor:
             else:
                 self._window_letter = chr(ord(self._window_letter) + 1)
 
-    def return_letter(self, letter: str) -> tuple:
+    def return_letter(self, letter: str, advance_rotor=True) -> tuple:
 
         if self._window_letter in self._turnover:
             turnover_next_dial = True
@@ -72,7 +72,8 @@ class Rotor:
             turnover_next_dial = False
 
         # Advance
-        self._advance_rotor()
+        if advance_rotor:
+            self._advance_rotor()
 
         return (
             self._rotor.get(letter),
@@ -94,7 +95,7 @@ class Rotor:
 
         # Get the initial ring setting (Ringstellung), could be an int or char
         if re.match('[A-Z]', ring_setting):
-            self._ring_setting = ord(ring_setting) - 64
+            self._ring_setting = ord(ring_setting)
 
         else:
             if not isinstance(ring_setting, int):
@@ -129,6 +130,7 @@ class Rotor:
         # Step 2: Setup the Ringstellung
         rotor_wiring_list = list(self._rotor_wiring)
         for step in range(self._ring_setting - ord('A')):
+
             for index, value in enumerate(rotor_wiring_list):
 
                 if value == "Z":
@@ -141,7 +143,11 @@ class Rotor:
 
         # Step 3: Place the key setting at the dot position
         while not self._get_current_index(chr(self._ring_setting)) == dot_position:
+            print(self._get_current_index(chr(self._ring_setting)))
+            print(dot_position)
+            print(f'HERE{self}')
             self._advance_rotor(False)
+
 
         # Step 4: Create the rotor
         for index, value in enumerate(list(self._rotor_wiring)):
@@ -160,7 +166,7 @@ class Rotor:
 
 if __name__ == "__main__":
 
-    rt = Rotor("I", "03", "Z")
+    rt = Rotor("I", "C", "Z")
     print(rt.return_letter('A'))
     print(rt.return_letter('A'))
     print(rt.return_letter('A'))

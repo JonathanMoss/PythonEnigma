@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-MIN_STECKER_PAIR = 10
+MIN_STECKER_PAIR = 6
 MAX_STECKER_PAIR = 13
 
 
